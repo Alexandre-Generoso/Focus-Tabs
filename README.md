@@ -5,6 +5,9 @@
 Working on a research topic? Save it. Jumping to another project? Save that too. Come back to either one with a single click.
 
 ---
+## Screenshot
+
+<img width="386" height="470" alt="image" src="https://github.com/user-attachments/assets/78b598ee-bf2e-4fbb-bcdf-2de51488a7c7" />
 
 ## What it does
 

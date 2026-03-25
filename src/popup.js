@@ -265,13 +265,27 @@ async function renderSessions() {
     head.append(meta, actions);
     item.append(head, details);
 
+    let clickTimer = null;
+
+    name.title = "Double-click to rename";
+
+    name.addEventListener("dblclick", (event) => {
+      event.stopPropagation();
+      clearTimeout(clickTimer);
+      startRename(name, session);
+    });
+
     item.addEventListener("click", (event) => {
-      if (event.target.closest("button") || event.target.closest("a")) {
+      if (event.target.closest("button") || event.target.closest("a") || event.target.closest(".rename-input")) {
         return;
       }
+      if (event.detail !== 1) return;
 
-      toggleSessionExpanded(session.id);
-      renderSessions();
+      clearTimeout(clickTimer);
+      clickTimer = setTimeout(() => {
+        toggleSessionExpanded(session.id);
+        renderSessions();
+      }, 220);
     });
 
     item.addEventListener("keydown", (event) => {
@@ -292,6 +306,61 @@ function toggleSessionExpanded(sessionId) {
   } else {
     expandedSessions.add(sessionId);
   }
+}
+
+function startRename(nameEl, session) {
+  const input = document.createElement("input");
+  input.className = "rename-input";
+  input.type = "text";
+  input.value = session.name;
+  input.maxLength = 80;
+
+  nameEl.replaceWith(input);
+  input.focus();
+  input.select();
+
+  let committed = false;
+
+  async function commit() {
+    if (committed) return;
+    committed = true;
+    const newName = input.value.trim();
+    if (newName && newName !== session.name) {
+      await renameSession(session.id, newName);
+    } else {
+      renderSessions();
+    }
+  }
+
+  function cancel() {
+    if (committed) return;
+    committed = true;
+    renderSessions();
+  }
+
+  input.addEventListener("keydown", (event) => {
+    event.stopPropagation();
+    if (event.key === "Enter") {
+      event.preventDefault();
+      commit();
+    } else if (event.key === "Escape") {
+      cancel();
+    }
+  });
+
+  input.addEventListener("click", (event) => event.stopPropagation());
+  input.addEventListener("dblclick", (event) => event.stopPropagation());
+  input.addEventListener("blur", commit);
+}
+
+async function renameSession(sessionId, newName) {
+  const sessions = await getSessions();
+  const target = sessions.find((s) => s.id === sessionId);
+  if (!target) return;
+  target.name = newName;
+  await chrome.storage.local.set({ [STORAGE_KEY]: sessions });
+  setFeedback(`Renamed to "${newName}".`);
+  renderSessions();
 }
 
 async function getSessions() {

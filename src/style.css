@@ -309,6 +309,22 @@ button:focus-visible {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  cursor: text;
+}
+
+.rename-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid var(--action);
+  color: var(--text-primary);
+  font-size: 0.87rem;
+  font-family: inherit;
+  font-weight: 600;
+  padding: 0 0 1px;
+  margin: 0;
+  width: 100%;
+  outline: none;
+  caret-color: var(--action);
 }
 
 .session-date {

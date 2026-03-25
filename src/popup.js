@@ -235,7 +235,25 @@ async function renderSessions() {
     deleteBtn.title = "Delete session";
     deleteBtn.setAttribute("aria-label", "Delete session");
     deleteBtn.innerHTML = "&#128465;";
-    deleteBtn.addEventListener("click", () => deleteSession(session.id));
+
+    let deleteConfirmTimer = null;
+
+    deleteBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      if (deleteBtn.classList.contains("confirming")) {
+        clearTimeout(deleteConfirmTimer);
+        deleteSession(session.id);
+      } else {
+        deleteBtn.classList.add("confirming");
+        deleteBtn.title = "Click again to confirm";
+        deleteBtn.textContent = "Sure?";
+        deleteConfirmTimer = setTimeout(() => {
+          deleteBtn.classList.remove("confirming");
+          deleteBtn.title = "Delete session";
+          deleteBtn.innerHTML = "&#128465;";
+        }, 3000);
+      }
+    });
 
     const details = document.createElement("div");
     details.className = "session-details";

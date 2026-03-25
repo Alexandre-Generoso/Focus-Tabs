@@ -24,6 +24,21 @@ All sessions are saved locally in your browser using `chrome.storage.local`. Not
 
 ---
 
+## Why FocusTabs instead of Chrome Tab Groups?
+
+Chrome Groups are great for organizing tabs you want open *at the same time*. FocusTabs is for a different workflow — **intentional context switching**.
+
+| | Chrome Tab Groups | FocusTabs |
+|---|---|---|
+| Survives closing the browser | ✗ unreliable | ✓ always |
+| Close all related tabs at once | ✗ | ✓ |
+| Snapshot a context over time | ✗ (live only) | ✓ multiple saves |
+| Keeps the tab bar clean | ✗ | ✓ everything is offscreen |
+
+**The use case**: you're deep in a research rabbit hole, but you need to switch to a work task. With Chrome Groups you either leave all those tabs open (wasting memory and attention) or lose them. With FocusTabs you hit Save, close everything, do your work, and come back to exactly where you left off.
+
+---
+
 ## How to install (local / developer mode)
 
 > This extension isn't on the Chrome Web Store yet — you load it directly from the source folder.

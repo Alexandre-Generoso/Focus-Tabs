@@ -99,7 +99,7 @@ Focus-Tabs/
 
 ### How the pieces connect
 
-- The **browser reads `manifest.json`** first — it's the entry point that wires everything together
+- The **browser reads `manifest.json`** first it's the entry point that wires everything together
 - `manifest.json` points to `src/popup.html` as the popup UI
 - `popup.html` loads `style.css` for visuals and `popup.js` for behavior
 - `popup.js` talks to the browser via the **Chrome Extensions API** (`chrome.tabs`, `chrome.storage`)

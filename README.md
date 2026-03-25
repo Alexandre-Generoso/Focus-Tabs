@@ -18,6 +18,8 @@ Working on a research topic? Save it. Jumping to another project? Save that too.
 | **Close Session Tabs** | Closes any currently open tabs that belong to a specific session |
 | **Expand Session** | Click a session card to see the list of pages saved in it |
 | **Delete Session** | Permanently removes a session from your saved list |
+| **Export JSON** | Downloads a backup file with all saved sessions |
+| **Import JSON** | Restores sessions from a previously exported JSON file |
 | **Theme Picker** | Swap between 4 color themes — Ocean, Orange, Berry, and Green |
 
 All sessions are saved locally in your browser using `chrome.storage.local`. Nothing is sent to any server.
@@ -33,6 +35,7 @@ Chrome Groups are great for organizing tabs you want open *at the same time*. Fo
 | Survives closing the browser | ✗ unreliable | ✓ always |
 | Close all related tabs at once | ✗ | ✓ |
 | Snapshot a context over time | ✗ (live only) | ✓ multiple saves |
+| Backup and transfer sessions (JSON) | ✗ | ✓ export and import |
 | Keeps the tab bar clean | ✗ | ✓ everything is offscreen |
 
 **The use case**: you're deep in a research rabbit hole, but you need to switch to a work task. With Chrome Groups you either leave all those tabs open (wasting memory and attention) or lose them. With FocusTabs you hit Save, close everything, do your work, and come back to exactly where you left off.
@@ -62,6 +65,8 @@ After any code change, go back to `chrome://extensions` and click the **↺ relo
 5. Your session appears in the list below
 6. Click a session card to expand it and see the saved pages
 7. Use **Open** to restore the session, or the **✗** button to close matching tabs
+8. Use **Export JSON** to back up all sessions
+9. Use **Import JSON** to merge sessions from a backup file
 
 ---
 

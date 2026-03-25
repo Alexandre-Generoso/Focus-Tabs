@@ -250,6 +250,25 @@ button:focus-visible {
   color: var(--text-soft);
 }
 
+.transfer-row {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.secondary-btn {
+  background: #1b2a3a;
+  border-color: #314a63;
+  color: #dcedff;
+  padding: 9px 10px;
+}
+
+.secondary-btn:hover {
+  background: #24384d;
+  border-color: #40607d;
+}
+
 .sessions-section h2 {
   margin: 0 0 10px;
   font-size: 0.82rem;

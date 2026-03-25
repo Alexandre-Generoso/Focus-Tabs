@@ -34,6 +34,17 @@
           <button id="saveSessionBtn" type="button">Save Current Tabs</button>
         </div>
         <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+
+        <div class="transfer-row" aria-label="Export and import sessions">
+          <button id="exportSessionsBtn" type="button" class="secondary-btn">Export JSON</button>
+          <button id="importSessionsBtn" type="button" class="secondary-btn">Import JSON</button>
+          <input
+            id="importFileInput"
+            class="visually-hidden"
+            type="file"
+            accept="application/json,.json"
+          />
+        </div>
       </section>
 
       <section class="sessions-section" aria-label="Saved sessions">

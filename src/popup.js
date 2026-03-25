@@ -5,6 +5,9 @@ const ALLOWED_THEMES = new Set(["ocean", "orange", "berry", "green"]);
 
 const sessionNameInput = document.getElementById("sessionName");
 const saveSessionBtn = document.getElementById("saveSessionBtn");
+const exportSessionsBtn = document.getElementById("exportSessionsBtn");
+const importSessionsBtn = document.getElementById("importSessionsBtn");
+const importFileInput = document.getElementById("importFileInput");
 const sessionsList = document.getElementById("sessionsList");
 const emptyState = document.getElementById("emptyState");
 const feedback = document.getElementById("feedback");
@@ -17,6 +20,10 @@ async function init() {
   await loadTheme();
 
   saveSessionBtn.addEventListener("click", saveCurrentSession);
+  exportSessionsBtn.addEventListener("click", exportSessionsToJson);
+  importSessionsBtn.addEventListener("click", triggerImportPicker);
+  importFileInput.addEventListener("change", importSessionsFromFile);
+
   sessionNameInput.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       saveCurrentSession();
@@ -179,6 +186,95 @@ async function deleteSession(sessionId) {
   expandedSessions.delete(sessionId);
   setFeedback("Session deleted.");
   renderSessions();
+}
+
+async function exportSessionsToJson() {
+  try {
+    const sessions = await getSessions();
+
+    if (!sessions.length) {
+      setFeedback("There are no sessions to export.");
+      return;
+    }
+
+    const payload = {
+      app: "FocusTabs",
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      sessions: sessions.map((session) => ({
+        id: session.id,
+        name: session.name,
+        urls: session.urls,
+        createdAt: session.createdAt
+      }))
+    };
+
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const downloadUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = `focus-tabs-sessions-${buildExportTimestamp()}.json`;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(downloadUrl);
+
+    setFeedback(`Exported ${sessions.length} session(s).`);
+  } catch (error) {
+    console.error("Error exporting sessions:", error);
+    setFeedback("Could not export sessions.");
+  }
+}
+
+function triggerImportPicker() {
+  importFileInput.click();
+}
+
+async function importSessionsFromFile(event) {
+  const file = event.target.files && event.target.files[0];
+
+  if (!file) {
+    return;
+  }
+
+  try {
+    const content = await file.text();
+    const parsed = JSON.parse(content);
+    const rawSessions = Array.isArray(parsed)
+      ? parsed
+      : parsed && Array.isArray(parsed.sessions)
+        ? parsed.sessions
+        : null;
+
+    if (!rawSessions) {
+      setFeedback("Invalid JSON format. Expected a sessions array.");
+      return;
+    }
+
+    const normalizedImported = normalizeImportedSessions(rawSessions);
+
+    if (!normalizedImported.length) {
+      setFeedback("No valid sessions found in this file.");
+      return;
+    }
+
+    const existingSessions = await getSessions();
+    const mergeResult = mergeSessions(existingSessions, normalizedImported);
+
+    if (mergeResult.addedCount === 0) {
+      setFeedback("All imported sessions already exist.");
+      return;
+    }
+
+    await chrome.storage.local.set({ [STORAGE_KEY]: mergeResult.sessions });
+    setFeedback(`Imported ${mergeResult.addedCount} new session(s).`);
+    renderSessions();
+  } catch (error) {
+    console.error("Error importing sessions:", error);
+    setFeedback("Could not import this JSON file.");
+  } finally {
+    importFileInput.value = "";
+  }
 }
 
 async function renderSessions() {
@@ -384,6 +480,82 @@ async function renameSession(sessionId, newName) {
 async function getSessions() {
   const stored = await chrome.storage.local.get(STORAGE_KEY);
   return Array.isArray(stored[STORAGE_KEY]) ? stored[STORAGE_KEY] : [];
+}
+
+function normalizeImportedSessions(rawSessions) {
+  const normalized = [];
+
+  for (let index = 0; index < rawSessions.length; index += 1) {
+    const rawSession = rawSessions[index];
+
+    if (!rawSession || typeof rawSession !== "object") {
+      continue;
+    }
+
+    const rawUrls = Array.isArray(rawSession.urls) ? rawSession.urls : [];
+    const urls = [...new Set(
+      rawUrls
+        .filter((url) => typeof url === "string")
+        .map((url) => url.trim())
+        .filter((url) => isSavableUrl(url))
+    )];
+
+    if (!urls.length) {
+      continue;
+    }
+
+    const name = typeof rawSession.name === "string" ? rawSession.name.trim() : "";
+    const createdAt = Number.isFinite(rawSession.createdAt) ? Number(rawSession.createdAt) : Date.now();
+    const id = typeof rawSession.id === "string" && rawSession.id.trim()
+      ? rawSession.id.trim()
+      : crypto.randomUUID();
+
+    normalized.push({
+      id,
+      name: name || `Imported Session ${index + 1}`,
+      urls,
+      createdAt
+    });
+  }
+
+  return normalized;
+}
+
+function mergeSessions(existingSessions, importedSessions) {
+  const sessions = [...existingSessions];
+  const existingIds = new Set(existingSessions.map((session) => session.id));
+  const signatures = new Set(existingSessions.map((session) => getSessionSignature(session)));
+  let addedCount = 0;
+
+  for (let index = importedSessions.length - 1; index >= 0; index -= 1) {
+    const importedSession = importedSessions[index];
+    const signature = getSessionSignature(importedSession);
+
+    if (signatures.has(signature)) {
+      continue;
+    }
+
+    const sessionToInsert = { ...importedSession };
+
+    if (existingIds.has(sessionToInsert.id)) {
+      sessionToInsert.id = crypto.randomUUID();
+    }
+
+    sessions.unshift(sessionToInsert);
+    existingIds.add(sessionToInsert.id);
+    signatures.add(signature);
+    addedCount += 1;
+  }
+
+  return { sessions, addedCount };
+}
+
+function getSessionSignature(session) {
+  return `${session.name}|${session.createdAt}|${session.urls.join("\n")}`;
+}
+
+function buildExportTimestamp() {
+  return new Date().toISOString().replace(/[:.]/g, "-");
 }
 
 function setFeedback(message) {

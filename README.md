@@ -120,4 +120,4 @@ Works on any Chromium-based browser:
 
 ## License
 
-MIT — do whatever you want with it.
+MIT, do whatever you want with it.

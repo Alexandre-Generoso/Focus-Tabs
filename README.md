@@ -7,7 +7,8 @@ Working on a research topic? Save it. Jumping to another project? Save that too.
 ---
 ## Screenshot
 
-<img width="386" height="470" alt="image" src="https://github.com/user-attachments/assets/78b598ee-bf2e-4fbb-bcdf-2de51488a7c7" />
+<img width="384" height="463" alt="image" src="https://github.com/user-attachments/assets/a16e081b-f831-418c-b419-567193a2a424" />
+
 
 ## What it does
 

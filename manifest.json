@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "FocusTabs",
+  "description": "Save and restore groups of tabs as sessions.",
+  "version": "1.0.0",
+  "icons": {
+    "16": "assets/icons/icon-16.png",
+    "32": "assets/icons/icon-32.png",
+    "48": "assets/icons/icon-48.png",
+    "128": "assets/icons/icon-128.png"
+  },
+  "permissions": ["tabs", "storage"],
+  "action": {
+    "default_title": "FocusTabs",
+    "default_icon": {
+      "16": "assets/icons/icon-16.png",
+      "32": "assets/icons/icon-32.png"
+    },
+    "default_popup": "src/popup.html"
+  }
+}

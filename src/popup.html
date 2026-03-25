@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FocusTabs</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="app-header">
+        <div class="header-top">
+          <h1>FocusTabs</h1>
+          <div class="theme-picker" aria-label="Select theme" role="group">
+            <button type="button" class="theme-swatch" data-theme="ocean" aria-label="Blue theme"></button>
+            <button type="button" class="theme-swatch" data-theme="orange" aria-label="Orange theme"></button>
+            <button type="button" class="theme-swatch" data-theme="berry" aria-label="Purple pink theme"></button>
+            <button type="button" class="theme-swatch" data-theme="green" aria-label="Green theme"></button>
+          </div>
+        </div>
+        <p>Save and restore tab sessions.</p>
+      </header>
+
+      <section class="save-section" aria-label="Save session">
+        <label for="sessionName" class="label">Session Name</label>
+        <div class="input-row">
+          <input
+            id="sessionName"
+            type="text"
+            placeholder="Ex: Morning Work"
+            maxlength="60"
+            autocomplete="off"
+          />
+          <button id="saveSessionBtn" type="button">Save Current Tabs</button>
+        </div>
+        <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="sessions-section" aria-label="Saved sessions">
+        <h2>Sessions</h2>
+        <ul id="sessionsList" class="sessions-list"></ul>
+        <p id="emptyState" class="empty-state">No saved sessions yet.</p>
+      </section>
+    </main>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

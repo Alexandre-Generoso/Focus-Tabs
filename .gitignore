@@ -1,0 +1,22 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build / archives
+*.zip
+*.crx
+*.pem
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+
+# Temp
+*.tmp
+*.temp

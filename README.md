@@ -1,6 +1,6 @@
 # FocusTabs
 
-**FocusTabs** is a browser extension that lets you save your open tabs as a named session and restore them later — so you can switch context without losing your place.
+**FocusTabs** is a browser extension that lets you save your open tabs as a named session and restore them later so you can switch context without losing your place.
 
 Working on a research topic? Save it. Jumping to another project? Save that too. Come back to either one with a single click.
 
